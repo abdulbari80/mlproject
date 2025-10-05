@@ -30,4 +30,4 @@ def predict_user_data():
         return render_template('home.html', results=round(result[0], 2))
     
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0') 
