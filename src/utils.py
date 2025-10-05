@@ -1,6 +1,7 @@
 import os
 import sys 
 import pickle
+import dill
 from src.exception import CustomException
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import r2_score
@@ -8,16 +9,6 @@ from src.logger import logging
 # import numpy as np
 # import pandas as pd
 
-def save_obj(file_path, obj):
-    """This function saves object in the given path"""
-    try:
-        dir_path = os.path.dirname(file_path)
-        dir = os.makedirs(dir_path, exist_ok=True)
-        with open(file_path, 'wb') as file_obj:
-            pickle.dump(obj, file_obj)
-    except Exception as e:
-        raise CustomException(e, sys)
-    
 def evaluate_models(models, params, X_train, X_test, y_train, y_test):
     """This function fintunes parameters and evaluates performance among the model"""
     try:
@@ -35,8 +26,20 @@ def evaluate_models(models, params, X_train, X_test, y_train, y_test):
         return performance_report
     except Exception as e:
         raise CustomException(e, sys)
+    
+def save_object(file_path, obj):
+    """This function saves object in the given path"""
+    try:
+        dir_path = os.path.dirname(file_path)
+        os.makedirs(dir_path, exist_ok=True)
+        with open(file_path, 'wb') as file_obj:
+            pickle.dump(obj, file_obj)
+    except Exception as e:
+        raise CustomException(e, sys)
+    
 
 def load_object(file_path):
+    """This function loads object from the given path"""
     try:
         with open(file_path, 'rb') as file_obj:
             return pickle.load(file_obj)
@@ -44,4 +47,5 @@ def load_object(file_path):
         raise CustomException(e, sys)
 
 if __name__ == "__main__":
-    print("This contains utility functions only and is not meant to be run directly")
+    print("This contains utility functions only",
+           "and is not meant to be run directly")

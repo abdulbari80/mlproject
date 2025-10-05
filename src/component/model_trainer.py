@@ -13,7 +13,7 @@ from sklearn.metrics import r2_score
 
 from src.exception import CustomException
 from src.logger import logging 
-from src.utils import save_obj, evaluate_models
+from src.utils import save_object, evaluate_models
 
 @dataclass
 class ModelTrainerConfig:
@@ -69,18 +69,22 @@ class ModelTraining:
             }
             logging.info("Model evaluation starts.....")
             results = evaluate_models(models=models, params=params, 
-                                      X_train=X_test_arr, y_train=y_test_arr, 
+                                      X_train=X_train_arr, y_train=y_train_arr, 
                                       X_test=X_test_arr, y_test=y_test_arr)
             logging.info("Model evaluation finished!")
-            best_model = max(results, key=results.get)
-            best_model_r2 = results[best_model]
+            best_model_name = max(results, key=results.get)
+            best_model = models[best_model_name]
+            best_model_r2 = results[best_model_name]
             if best_model_r2 < self.r2_threshold:
-                logging.info("Waring!! Test R2 is less than {self.r2_threshold}")
+                logging.info("Warning!! Test R2 is less than {self.r2_threshold}")
             best_model_path = self.model_train_config.model_obj_file_path
-            save_obj(best_model_path, best_model)
-            return (best_model, best_model_r2)
+            save_object(file_path=best_model_path, obj=best_model)
+            logging.info("Best model saved")
+            return (best_model_name, best_model_r2)
         except Exception as e:
             raise CustomException(e, sys)
         
 if __name__ == "__main__":
-    print("This trains ML models and is not meant to be run directly.")
+    print("This module trains a couple of models", 
+          "evaluates those to find the best one",
+          "and is not meant to be run onw its own")
